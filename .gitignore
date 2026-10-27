@@ -34,4 +34,4 @@ build/
 
 .env 
 *.pem
-*.key
+*.key.DS_Store
