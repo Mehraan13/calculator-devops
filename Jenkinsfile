@@ -49,5 +49,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    APP_IMAGE=${IMAGE_REPO}:${IMAGE_TAG} docker compose -p calculator up -d --remove-orphans
+                    for i in $(seq 1 30); do
+                        if curl -fsS http://localhost:8081/actuator/health | grep -q '"status":"UP"'; then
+                            echo "Deployment healthy"
+                            exit 0
+                        fi
+                        sleep 3
+                    done
+                    echo "Health check failed"
+                    docker compose -p calculator logs
+                    exit 1
+                '''
+            }
+        }
     }
 }
