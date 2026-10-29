@@ -88,13 +88,3 @@ pipeline {
         }}
     }
 }
-
-post {
-    success {
-        node('built-in') {
-            mail to: 'admin@example.com',
-                 subject: 'Deployment healthy',
-                 body: 'Success'
-        }
-    }
-}
