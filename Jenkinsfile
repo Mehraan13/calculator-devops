@@ -44,12 +44,10 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
                                                   usernameVariable: 'DH_USER',
                                                   passwordVariable: 'DH_PASS')]) {
-                    sh '''
-                        echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
-                        docker push ${IMAGE_REPO}:${IMAGE_TAG}
-                        docker push ${IMAGE_REPO}:latest
-                        docker logout
-                    '''
+                    sh 'echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin'
+                    retry(3) { sh 'docker push ${IMAGE_REPO}:${IMAGE_TAG}' }
+                    retry(3) { sh 'docker push ${IMAGE_REPO}:latest' }
+                    sh 'docker logout'
                 }
             }
         }
