@@ -75,14 +75,26 @@ pipeline {
 
     post {
         success {
+            node('built-in'){
             mail to: 'mehraanazharmir@gmail.com',
                  subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Build ${env.BUILD_NUMBER} passed and was deployed.\n${env.BUILD_URL}"
-        }
+        }}
         failure {
+            node('built-in'){
             mail to: 'mehraanazharmir@gmail.com',
                  subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Build ${env.BUILD_NUMBER} failed.\n${env.BUILD_URL}console"
+        }}
+    }
+}
+
+post {
+    success {
+        node('built-in') {
+            mail to: 'admin@example.com',
+                 subject: 'Deployment healthy',
+                 body: 'Success'
         }
     }
 }
