@@ -5,6 +5,10 @@ pipeline {
         skipDefaultCheckout(true)
         timestamps()
     }
+    
+    triggers { 
+        githubPush() 
+    }
 
     environment {
         JAVA_HOME = '/opt/homebrew/opt/openjdk@21'
@@ -66,6 +70,19 @@ pipeline {
                     exit 1
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            mail to: 'mehraanazharmir@gmail.com',
+                 subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build ${env.BUILD_NUMBER} passed and was deployed.\n${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'mehraanazharmir@gmail.com',
+                 subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build ${env.BUILD_NUMBER} failed.\n${env.BUILD_URL}console"
         }
     }
 }
