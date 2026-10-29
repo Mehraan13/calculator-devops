@@ -1,0 +1,35 @@
+services:
+  app:
+    image: ${APP_IMAGE:-calculator-devops:local}
+    build: .
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: "8080"
+      JAVA_TOOL_OPTIONS: "-Xmx256m"
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 40s
+    networks:
+      - calc-net
+
+  proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - calc-net
+
+networks:
+  calc-net:
+    driver: bridge
