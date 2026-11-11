@@ -74,7 +74,7 @@ Build status (success/failure) is emailed after every run. No credentials are st
 
 Jenkins setup used: Pipeline script from SCM, a Docker Hub access token stored as a "Username with password" credential (ID `dockerhub-creds`), SMTP configured in Manage Jenkins, and a GitHub webhook pointing to `<jenkins-url>/github-webhook/`.
 
-## Repo structure
+## Repository structure
 
 ```
 calculator-devops/
